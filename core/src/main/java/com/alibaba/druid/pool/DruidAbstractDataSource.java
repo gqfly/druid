@@ -60,8 +60,8 @@ import static com.alibaba.druid.util.JdbcConstants.POSTGRESQL_DRIVER;
  * @author wenshao [szujobs@hotmail.com]
  * @author ljw [ljw2083@alibaba-inc.com]
  */
-public abstract class DruidAbstractDataSource extends WrapperAdapter implements DruidAbstractDataSourceMBean, DataSource,
-    DataSourceProxy, Serializable, DataSourceMonitorable {
+public abstract class DruidAbstractDataSource extends WrapperAdapter
+        implements DruidAbstractDataSourceMBean, DataSource, DataSourceProxy, Serializable, DataSourceMonitorable {
     private static final long serialVersionUID = 1L;
     private static final Log LOG = LogFactory.getLog(DruidAbstractDataSource.class);
 
@@ -102,14 +102,30 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile NameCallback userCallback;
 
     protected volatile int initialSize = DEFAULT_INITIAL_SIZE;
+    /**
+     * 连接池最大活跃连接数量
+     * 超过该数量将会等待，直到有连接被释放
+     */
     protected volatile int maxActive = DEFAULT_MAX_ACTIVE_SIZE;
+    /**
+     * 最小空闲连接数
+     */
     protected volatile int minIdle = DEFAULT_MIN_IDLE;
     protected volatile int maxIdle = DEFAULT_MAX_IDLE;
+    /**
+     * 获取连接的最大等待时间
+     */
     protected volatile long maxWait = DEFAULT_MAX_WAIT;
     protected int notFullTimeoutRetryCount;
 
     protected volatile String validationQuery = DEFAULT_VALIDATION_QUERY;
     protected volatile int validationQueryTimeout = -1;
+
+    /**
+     * 默认false，不建议开启，高并发场景下比较耗性能
+     * true：每次都检测
+     * false：超出一定时间再检测
+     */
     protected volatile boolean testOnBorrow = DEFAULT_TEST_ON_BORROW;
     protected volatile boolean testOnReturn = DEFAULT_TEST_ON_RETURN;
     protected volatile boolean testWhileIdle = DEFAULT_WHILE_IDLE;
@@ -117,13 +133,22 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile boolean sharePreparedStatements;
     protected volatile int maxPoolPreparedStatementPerConnectionSize = 10;
 
+    /**
+     * ds状态：已初始化
+     */
     protected volatile boolean inited;
     protected volatile boolean initExceptionThrow = true;
 
     protected PrintWriter logWriter = new PrintWriter(System.out);
 
-    protected List<Filter> filters = new CopyOnWriteArrayList<Filter>();
+    /**
+     * Filter
+     */
+    protected List<Filter> filters = new CopyOnWriteArrayList<>();
     private boolean clearFiltersEnable = true;
+    /**
+     * 异常处理器
+     */
     protected volatile ExceptionSorter exceptionSorter;
 
     protected Driver driver;
@@ -141,14 +166,32 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int maxWaitThreadCount = -1;
     protected volatile boolean accessToUnderlyingConnectionAllowed = true;
 
+    /**
+     * 销毁连接池中连接的时间间隔
+     */
     protected volatile long timeBetweenEvictionRunsMillis = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
     protected volatile int numTestsPerEvictionRun = DEFAULT_NUM_TESTS_PER_EVICTION_RUN;
+    /**
+     * 最短可淘汰的空闲时间
+     */
     protected volatile long minEvictableIdleTimeMillis = DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
+    /**
+     * 最长可淘汰的空闲时间
+     */
     protected volatile long maxEvictableIdleTimeMillis = DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS;
+    /**
+     * 保活的时间间隔
+     */
     protected volatile long keepAliveBetweenTimeMillis = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS * 2;
+    /**
+     * 物理连接的超时时间
+     */
     protected volatile long phyTimeoutMillis = DEFAULT_PHY_TIMEOUT_MILLIS;
     protected volatile long phyMaxUseCount = -1;
 
+    /**
+     * 是否保存连接
+     */
     protected volatile boolean removeAbandoned;
     protected volatile long removeAbandonedTimeoutMillis = 300 * 1000;
     protected volatile boolean logAbandoned;
@@ -161,6 +204,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected volatile long timeBetweenConnectErrorMillis = DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS;
 
+    /**
+     * 连接校验器
+     */
     protected volatile ValidConnectionChecker validConnectionChecker;
 
     protected volatile boolean usePingMethod;
@@ -237,7 +283,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected boolean useOracleImplicitCache = true;
 
     protected ReentrantLock lock;
+
+    /**
+     * 表示连接池不空的状况，然后就可以考虑从连接池去连接了
+     */
     protected Condition notEmpty;
+    /**
+     * 表示连接池空了，然后就可以考虑创建连接
+     */
     protected Condition empty;
 
     protected ReentrantLock activeConnectionLock = new ReentrantLock();
@@ -253,6 +306,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     static final AtomicIntegerFieldUpdater<DruidAbstractDataSource> creatingCountUpdater = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "creatingCount");
     static final AtomicIntegerFieldUpdater<DruidAbstractDataSource> directCreateCountUpdater = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "directCreateCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> createCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "createCount");
+    /**
+     * 销毁连接的数量
+     */
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> destroyCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "destroyCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> createStartNanosUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "createStartNanos");
 
@@ -264,6 +320,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected DruidDataSourceStatLogger statLogger = new DruidDataSourceStatLoggerImpl();
 
     protected boolean asyncCloseConnectionEnable;
+    /**
+     * 最大的创建连接任务数
+     */
     protected int maxCreateTaskCount = 3;
     protected boolean failFast;
     protected volatile int failContinuous;
@@ -1790,12 +1849,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         long connectStartNanos = System.nanoTime();
         long connectedNanos, initedNanos, validatedNanos;
 
-        Map<String, Object> variables = initVariants
-                ? new HashMap<String, Object>()
-                : null;
-        Map<String, Object> globalVariables = initGlobalVariants
-                ? new HashMap<String, Object>()
-                : null;
+        Map<String, Object> variables = initVariants ? new HashMap<>() : null;
+        Map<String, Object> globalVariables = initGlobalVariants ? new HashMap<>() : null;
 
         createStartNanosUpdater.set(this, connectStartNanos);
         creatingCountUpdater.incrementAndGet(this);
@@ -1938,8 +1993,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     private boolean initSqls(Connection conn,
-            Map<String, Object> variables,
-            Map<String, Object> globalVariables) throws SQLException {
+                             Map<String, Object> variables,
+                             Map<String, Object> globalVariables) throws SQLException {
         boolean checked = false;
         Collection<String> initSqls = getConnectionInitSqls();
         if (initSqls.isEmpty()
@@ -2109,6 +2164,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public long getDataSourceId() {
         return getID();
     }
+
     public java.util.Date getCreatedTime() {
         return createdTime;
     }
@@ -2291,14 +2347,32 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public static class PhysicalConnectionInfo {
+        /**
+         * 连接对象
+         */
         private Connection connection;
+        /**
+         * 构造连接的起始时间
+         */
         private long connectStartNanos;
+        /**
+         * 构造连接的结束时间
+         */
         private long connectedNanos;
+        /**
+         * 连接初始化完的时间
+         */
         private long initedNanos;
+        /**
+         * 验证完连接的时间
+         */
         private long validatedNanos;
         private Map<String, Object> vairiables;
         private Map<String, Object> globalVairiables;
 
+        /**
+         * 对应创建连接的任务id
+         */
         long createTaskId;
 
         public PhysicalConnectionInfo(
@@ -2306,8 +2380,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 long connectStartNanos,
                 long connectedNanos,
                 long initedNanos,
-                long validatedNanos
-        ) {
+                long validatedNanos) {
             this(connection, connectStartNanos, connectedNanos, initedNanos, validatedNanos, null, null);
         }
 
@@ -2318,10 +2391,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 long initedNanos,
                 long validatedNanos,
                 Map<String, Object> vairiables,
-                Map<String, Object> globalVairiables
-        ) {
+                Map<String, Object> globalVairiables) {
             this.connection = connection;
-
             this.connectStartNanos = connectStartNanos;
             this.connectedNanos = connectedNanos;
             this.initedNanos = initedNanos;

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class StatFilterContext {
-    private List<StatFilterContextListener> listeners = new CopyOnWriteArrayList<StatFilterContextListener>();
+    private List<StatFilterContextListener> listeners = new CopyOnWriteArrayList<>();
 
     private static final StatFilterContext instance = new StatFilterContext();
 

@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.*;
 import java.util.List;
 
 public interface SQLTableSource extends SQLObject {
+
     String getAlias();
 
     long aliasHashCode64();
@@ -63,4 +64,5 @@ public interface SQLTableSource extends SQLObject {
     SQLUnpivot getUnpivot();
 
     void setUnpivot(SQLUnpivot x);
+
 }

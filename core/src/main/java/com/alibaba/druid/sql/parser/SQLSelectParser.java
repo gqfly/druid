@@ -29,6 +29,13 @@ import com.alibaba.druid.util.StringUtils;
 
 import java.util.List;
 
+/**
+ * SQL Select解析器
+ *
+ * @author gq
+ * @version 1.0
+ * @date 2024-05-10
+ */
 public class SQLSelectParser extends SQLParser {
     protected SQLExprParser exprParser;
     protected SQLSelectListCache selectListCache;

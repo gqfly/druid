@@ -64,7 +64,13 @@ public final class DruidConnectionHolder {
     protected volatile long lastExecTimeMillis;
     protected volatile long lastKeepTimeMillis;
     protected volatile long lastValidTimeMillis;
+    /**
+     * 被使用的次数
+     */
     protected long useCount;
+    /**
+     * 保活的次数
+     */
     private long keepAliveCheckCount;
     private long lastNotEmptyWaitNanos;
     private final long createNanoSpan;

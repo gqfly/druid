@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.visitor.VisitorFeature;
 import java.util.List;
 
 public interface SQLStatement extends SQLObject, SQLDbTypedObject {
+
     DbType getDbType();
 
     boolean isAfterSemi();
@@ -42,4 +43,5 @@ public interface SQLStatement extends SQLObject, SQLDbTypedObject {
     String toLowerCaseString();
 
     String toParameterizedString();
+
 }

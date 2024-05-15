@@ -50,6 +50,9 @@ import static com.alibaba.druid.sql.parser.Token.*;
 
 public class SQLStatementParser extends SQLParser {
     protected SchemaRepository repository;
+    /**
+     * 表达式解析器
+     */
     protected SQLExprParser exprParser;
     protected boolean parseCompleteValues = true;
     protected int parseValuesSize = 3;

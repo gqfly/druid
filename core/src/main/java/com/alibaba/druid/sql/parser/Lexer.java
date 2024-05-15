@@ -42,15 +42,31 @@ public class Lexer {
 
     protected int features; //SQLParserFeature.of(SQLParserFeature.EnableSQLBinaryOpExprGroup);
     protected TimeZone timeZone;
+    /**
+     * sql语句
+     */
     public final String text;
+    /**
+     * 处理sql语句的位置
+     */
     protected int pos;
+    /**
+     * 标志：处理部分的起点
+     */
     protected int mark;
     protected int numberSale;
     protected boolean numberExp;
 
+    /**
+     * pos位置对应的字符
+     */
     protected char ch;
 
     protected char[] buf;
+    /**
+     * 长度：处理部分的长度
+     * 和mark配置
+     */
     protected int bufPos;
 
     protected Token token;
@@ -63,6 +79,9 @@ public class Lexer {
 
     protected int commentCount;
     protected List<String> comments;
+    /**
+     * 是否跳过注释
+     */
     protected boolean skipComment = true;
     private SavePoint savePoint;
 
@@ -74,6 +93,9 @@ public class Lexer {
     protected CommentHandler commentHandler;
     protected boolean endOfComment;
     protected boolean keepComments;
+    /**
+     * sql行数
+     */
     protected int line;
     protected int lines;
     protected DbType dbType;
@@ -245,6 +267,8 @@ public class Lexer {
         this.text = input;
         this.pos = 0;
         ch = charAt(pos);
+        // 处理开始的空行，若有
+        // \u200B - 零宽度空格符，用于较长单词的换行分隔
         while (ch == '\u200B' || ch == '\n') {
             if (ch == '\n') {
                 line++;

@@ -23,7 +23,13 @@ import com.alibaba.druid.util.StringUtils;
 import java.util.TimeZone;
 
 public class SQLParser {
+    /**
+     * 词法分析器
+     */
     protected final Lexer lexer;
+    /**
+     * 数据库类型
+     */
     protected DbType dbType;
 
     public SQLParser(String sql, DbType dbType, SQLParserFeature... features) {

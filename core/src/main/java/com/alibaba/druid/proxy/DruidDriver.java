@@ -73,12 +73,9 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     private static final String MBEAN_NAME = "com.alibaba.druid:type=DruidDriver";
 
     static {
-        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            @Override
-            public Object run() {
-                registerDriver(instance);
-                return null;
-            }
+        AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+            registerDriver(instance);
+            return null;
         });
     }
 

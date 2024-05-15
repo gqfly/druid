@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class BigOrTest extends TestCase {
-    public void testBigOr() throws Exception {
+    public void testBigOr() {
         StringBuilder buf = new StringBuilder();
         buf.append("SELECT * FROM T WHERE FID = ?");
         for (int i = 0; i < 10000; ++i) {
@@ -33,6 +33,15 @@ public class BigOrTest extends TestCase {
         String sql = buf.toString();
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, (DbType) null);
         String text = SQLUtils.toSQLString(stmtList.get(0));
-        //System.out.println(text);
+        System.out.println(text);
+    }
+
+    public void testSelect() {
+        StringBuilder buf = new StringBuilder();
+        buf.append("SELECT * FROM T WHERE FID = ?");
+        String sql = buf.toString();
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, (DbType) null);
+        String text = SQLUtils.toSQLString(stmtList.get(0));
+        System.out.println(text);
     }
 }

@@ -21,13 +21,22 @@ import java.util.List;
 import java.util.Map;
 
 public interface SQLObject {
+
+    // ------------感觉像是核心方法
+
     void accept(SQLASTVisitor visitor);
 
+    // ------------克隆
+
     SQLObject clone();
+
+    // ------------父级
 
     SQLObject getParent();
 
     void setParent(SQLObject parent);
+
+    // ------------属性相关
 
     Map<String, Object> getAttributes();
 
@@ -39,7 +48,11 @@ public interface SQLObject {
 
     Map<String, Object> getAttributesDirect();
 
+    // ------------输出
+
     void output(StringBuilder buf);
+
+    // ------------comment相关
 
     void addBeforeComment(String comment);
 

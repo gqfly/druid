@@ -467,8 +467,7 @@ public class FilterChainImpl implements FilterChain {
     }
 
     private Filter nextFilter() {
-        return getFilters()
-                .get(pos++);
+        return getFilters().get(pos++);
     }
 
     @Override

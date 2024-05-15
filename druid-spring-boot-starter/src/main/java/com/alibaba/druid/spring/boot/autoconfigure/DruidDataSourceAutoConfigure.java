@@ -62,8 +62,8 @@ public class DruidDataSourceAutoConfigure {
      */
     @Bean
     @ConditionalOnMissingBean({DruidDataSourceWrapper.class,
-        DruidDataSource.class,
-        DataSource.class})
+            DruidDataSource.class,
+            DataSource.class})
     public DruidDataSourceWrapper dataSource() {
         LOGGER.info("Init DruidDataSource");
         return new DruidDataSourceWrapper();

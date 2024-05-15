@@ -49,7 +49,7 @@ public class SQLSelect extends SQLObjectImpl implements SQLDbTypedObject {
 
     public List<SQLHint> getHints() {
         if (hints == null) {
-            hints = new ArrayList<SQLHint>(2);
+            hints = new ArrayList<>(2);
         }
         return hints;
     }
